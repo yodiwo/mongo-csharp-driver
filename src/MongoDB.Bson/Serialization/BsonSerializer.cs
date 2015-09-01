@@ -395,13 +395,13 @@ namespace MongoDB.Bson.Serialization
                         Type parentType = type.GetTypeInfo().BaseType;
                         while (convention == null)
                         {
+                            if (__discriminatorConventions.TryGetValue(parentType, out convention))
+                            {
+                                break;
+                            }
                             if (parentType == typeof(object))
                             {
                                 convention = StandardDiscriminatorConvention.Hierarchical;
-                                break;
-                            }
-                            if (__discriminatorConventions.TryGetValue(parentType, out convention))
-                            {
                                 break;
                             }
                             parentType = parentType.GetTypeInfo().BaseType;

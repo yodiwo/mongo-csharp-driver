@@ -46,6 +46,7 @@ namespace MongoDB.Bson.Serialization.Options
         public bool AllowOverflow
         {
             get { return _allowOverflow; }
+            set { _allowOverflow = value; }
         }
 
         /// <summary>
@@ -54,6 +55,7 @@ namespace MongoDB.Bson.Serialization.Options
         public bool AllowTruncation
         {
             get { return _allowTruncation; }
+            set { _allowTruncation = value; }
         }
 
         // public methods

@@ -23,6 +23,13 @@ using MongoDB.Bson.Serialization.Serializers;
 
 namespace MongoDB.Bson.Serialization
 {
+    /// <summary> Represents a serializer for a class map. </summary>
+    public static class BsonClassMapSerializer
+    {
+        /// <summary> global error handler </summary>
+        public static Func<BsonDeserializationContext, BsonMemberMap, string, object> HandleDeserializeMemberValueError = null;
+    }
+
     /// <summary>
     /// Represents a serializer for a class map.
     /// </summary>
@@ -592,9 +599,9 @@ namespace MongoDB.Bson.Serialization
                 extraElements[elementName] = BsonTypeMapper.MapToDotNetValue(bsonValue);
             }
         }
-
+        
         /// <summary> global error handler </summary>
-        public static Func<BsonDeserializationContext , BsonMemberMap,string, object> HandleDeserializeMemberValueError = null;
+        public static Func<BsonDeserializationContext, BsonMemberMap, string, object> HandleDeserializeMemberValueError = null;
 
         private object DeserializeMemberValue(BsonDeserializationContext context, BsonMemberMap memberMap)
         {
@@ -609,9 +616,11 @@ namespace MongoDB.Bson.Serialization
                 var message = string.Format(
                     "An error occurred while deserializing the {0} {1} of class {2}: {3}", // terminating period provided by nested message
                     memberMap.MemberName, (memberMap.MemberInfo is FieldInfo) ? "field" : "property", memberMap.ClassMap.ClassType.FullName, ex.Message);
-
+                
                 if (HandleDeserializeMemberValueError != null)
-                    return HandleDeserializeMemberValueError.Invoke(context, memberMap, message);
+                    return HandleDeserializeMemberValueError?.Invoke(context, memberMap, message);
+                else if (BsonClassMapSerializer.HandleDeserializeMemberValueError != null)
+                    return BsonClassMapSerializer.HandleDeserializeMemberValueError?.Invoke(context, memberMap, message);
                 else
                     throw new FormatException(message, ex);
             }

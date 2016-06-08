@@ -593,6 +593,9 @@ namespace MongoDB.Bson.Serialization
             }
         }
 
+        /// <summary> global error handler </summary>
+        public static Func<BsonDeserializationContext , BsonMemberMap,string, object> HandleDeserializeMemberValueError = null;
+
         private object DeserializeMemberValue(BsonDeserializationContext context, BsonMemberMap memberMap)
         {
             var bsonReader = context.Reader;
@@ -606,7 +609,11 @@ namespace MongoDB.Bson.Serialization
                 var message = string.Format(
                     "An error occurred while deserializing the {0} {1} of class {2}: {3}", // terminating period provided by nested message
                     memberMap.MemberName, (memberMap.MemberInfo is FieldInfo) ? "field" : "property", memberMap.ClassMap.ClassType.FullName, ex.Message);
-                throw new FormatException(message, ex);
+
+                if (HandleDeserializeMemberValueError != null)
+                    return HandleDeserializeMemberValueError.Invoke(context, memberMap, message);
+                else
+                    throw new FormatException(message, ex);
             }
         }
 

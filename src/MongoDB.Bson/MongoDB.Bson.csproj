@@ -3,8 +3,6 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard1.5;net452</TargetFrameworks>
     <LangVersion>7.3</LangVersion>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
     <CodeAnalysisRuleSet>..\..\MongoDBLegacy.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
@@ -32,7 +30,7 @@
   <PropertyGroup>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
-  
+
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.5'">
     <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
   </PropertyGroup>
